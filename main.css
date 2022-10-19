@@ -1,0 +1,23 @@
+body{
+    background-color: darkseagreen;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 1.2em;
+    flex: 0 0 120px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding-bottom: 250px;
+}
+
+div{
+    border: 2px solid darkgrey;
+    border-radius: 20px;
+    background-color: cadetblue;
+    min-height: 75px;
+    width: 280px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
