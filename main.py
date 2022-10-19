@@ -1,6 +1,10 @@
-import webbrowser
-#webbrowser.open('https://google.com') 
+import sys
+from PyQt5 import QtWidgets,QtGui,QtCore
+from PyQt5.QtWebEngineWidgets import *
 
-print("yo")
+app=QtWidgets.QApplication(sys.argv)
+w=QWebEngineView()
+w.load(QtCore.QUrl('https://google.com')) ## load google on startup
+w.showMaximized()
 
-input()
+app.exec_()
