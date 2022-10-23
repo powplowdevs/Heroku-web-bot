@@ -17,39 +17,64 @@ import os
 import requests
 from lxml import html
 
-from flask import request
 from flask import Flask
 from flask import Response
-
+from flask import request as re
 
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/h')
 def home():
-    usage = 'Pass a properly encoded url parameter e.g. /https/www.google.com'
+    usage = 'Enter a valid URL into the serach bar after this URL such as -> /https/www.google.com'
     return usage
 
-@app.route('/https/<url>')
-def root(url):    
-    url = 'https://' + url
-    print(url)
-    r = requests.get(url)
-    rr = Response(response=r.content, status=r.status_code)
-    rr.headers["Content-Type"] = r.headers['Content-Type']
-    return rr
+#BASIC URLS
+@app.route('/h/<url>')
+def root(url): 
+    try:
+        if url != "search":
+            url = "https://" + url
 
-@app.route('/g/<keyword>')
-def gkeyword(keyword):     
-    url = 'https://www.google.com/search?q='
-    print(url)
-    payload = {'q':keyword, 'num':1, 'start':1, 'sourceid':'chrome', 'ie':'UTF-8', 'cr':'cr=countryUS'}
-    r = requests.get(url, params=payload)
-    rr = Response(response=r.content, status=r.status_code)
-    rr.headers["Content-Type"] = r.headers['Content-Type']
-    return rr
+            r = requests.get(url)
+            print("Fecthing: " + str(r.url))
+            rr = Response(response=r.content, status=r.status_code)
+            print("RESPONE CODE" + str(r.status_code) + "\n")
+
+            if str(r.status_code) == "404":
+                url = "https://google.com/" + url
+                print("Error fetching base url, new url is: " + url)
+                r = requests.get(url)
+                rr = Response(response=r.content, status=r.status_code)
+                rr.headers["Content-Type"] = r.headers['Content-Type']
+                return rr
+
+            return rr
+    except:
+        if url != "https://client_204":
+            print("Error fetching [" + url + "]\nFull url: https://www.google.com" + url)
+            url = "https://www.google.com/" + url
+            r = requests.get(url)
+            print("\n\n\n\nRESPONE CODE" + str(r.status_code))
+            rr = Response(response=r.content, status=r.status_code)
+            rr.headers["Content-Type"] = r.headers['Content-Type']
+            return rr
+        else:
+            print("return null")
+            return ""
+
+#SEARCH GOOGLE
+@app.route('/search?ie=ISO-8859-1&hl=en&source=hp&biw=&bih=&q=<url>')
+def search_google_land(url):
+    print("PASSED A /URL URL IS: " + url)    
+    if url == "search":
+        print("SEARCHING ON GOOGLE")
+        url = 'https://www.google.com/' + url
+        r = requests.get(url)
+        rr = Response(response=r.content, status=r.status_code)
+        rr.headers["Content-Type"] = r.headers['Content-Type']
+        return rr
+    return ""
 
 if __name__ == '__main__':
-    # Bind to PORT if defined, otherwise default to 8000.
-    #port = int(os.environ.get('PORT', 8000))
     app.run()
