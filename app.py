@@ -1,18 +1,4 @@
-# from flask import Flask, render_template, request, flash
-
-# app = Flask(__name__)
-
-# @app.route("/")
-# def index():
-#     return render_template("index.html")
-
-# # main driver function
-# if __name__ == '__main__':
- 
-#     # run() method of Flask class runs the application
-#     # on the local development server.
-#     app.run()
-
+#IMPORTS
 import os
 import requests
 from lxml import html
@@ -22,104 +8,114 @@ from flask import Response
 from flask import request
 from flask import request as re
 
+#APP
 app = Flask(__name__)
 
 
+#MAIN ROUTE
 @app.route('/')
 def home():
-    print("HOME")
     usage = 'Enter a valid URL into the serach bar after this URL such as -> /h/google.com'
     return usage
 
-#BASIC URLS
+#HANDLE BASIC URLS
 @app.route('/h/<url>')
 def root(url): 
     try:
-        if url != "search":
-            url = url
-
-            r = requests.get(url)
-            new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
-
-            print("Fecthing: " + str(r.url))
-
-            rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
-            rr.headers["Content-Type"] = r.headers['Content-Type']
-
-            #print(r.content, "main")
-
-            print("RESPONE CODE" + str(r.status_code) + "\n")
-
-            if str(r.status_code) == "404":
-                url = "https://google.com/" + url
-
-                print("Error fetching base url, new url is: " + url)
-                print("url: ", url)
-
-                r = requests.get(url)
-                new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
-
-                print("Fecthing: " + str(r.url))
-
-                rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
-                rr.headers["Content-Type"] = r.headers['Content-Type']
-
-                #print(r.content, "404")
-
-                return rr
-
-            return rr
-    except:
-        print("Error fetching [" + url + "]\nFull url: https://" + url)
-
-        url = "https://" + url
-
+        #GRAB SITE HTML
         r = requests.get(url)
+        #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
         new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
+        
+        #DISPLAY URL
+        print("Fecthing: " + str(r.url))
 
-        print("rurl", r.url)
-        print("RESPONE CODE" + str(r.status_code))
-
+        #CREATE RETRUN OBJECT
         rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
         rr.headers["Content-Type"] = r.headers['Content-Type']
 
-        #print(bytes(new, encoding="windows-1252"), "ERROR")
+        #HANDLE 404
+        if str(r.status_code) == "404":
+            #TRY URL BUT NOW WITH "https://google.com/" INFRONT
+            url = "https://google.com/" + url
 
+            #DISPLAY ERROR URL
+            print("Error fetching base url, new url is: " + url)
+            print("url: ", url)
+
+            #GRAB SITE HTML
+            r = requests.get(url)
+            #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
+            new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
+
+            #CREATE RETRUN OBJECT
+            rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
+            rr.headers["Content-Type"] = r.headers['Content-Type']
+
+            #RETURN
+            return rr
+
+    #HANDLE 404
+    except:
+        #DISPLAY NEW URL
+        print("Error fetching [" + url + "]\nFull url: https://" + url)
+
+        #EDIT URL TO HAVE https:// BEFORE
+        url = "https://" + url
+
+        #GRAB SITE HTML
+        r = requests.get(url)
+        #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
+        new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
+        
+        #CREATE RETRUN OBJECT
+        rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
+        rr.headers["Content-Type"] = r.headers['Content-Type']
+
+        #RETURN
         return rr
 
 
 @app.route('/<u>', methods=['GET'])
 def search(u):
+    #GRAB ALL ARGS FOR SITE
     args = request.args
-    print("ARGS: ",args.get("q"),"\n")
+    #GRAB URL FOR SITE
     name = args.get("q")
-    print(args)
-    print(name)
-    print("ARGS FOR NAME: ", len(name), name[0:4])
+
     try:
+        #HANDLE GOOGLE SEARCH
         if len(name) >= 4 and name[0:5] != "https" or len(name) < 4:
-            print("SEARCHING")
+            #DEFINE URL WITH THE URL WE WANT TO ACCESS
             url = "https://www.google.com/search?q=" + args.get("q")
-
+            print("SEARCHING: ", url)
+            
+            #GRAB SITE HTML
             r = requests.get(url)
+            #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
             new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
-
-            print("Fecthing: " + str(r.url))
-
+            
+            #CREATE RETRUN OBJECT
             rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
             rr.headers["Content-Type"] = r.headers['Content-Type']
-        elif len(name) >= 4 and name[0:5] == "https":
-            print("SITE URL")
-            url = args.get("q")
 
-            print("URLS: ",url)
+        #HANDLE OPEN SITE
+        elif len(name) >= 4 and name[0:5] == "https":
+            url = args.get("q")
+            print("SITE URL: ",)
+
             r = requests.get(url)
             #new = (r.content).decode("windows-1252").replace('src="','src="' + str(r.url))
-
+                
             print("Fecthing: " + str(r.url))
 
             rr = Response(response=r.content, status=r.status_code)
+            print("CONTENT: ", r.content)
+            print("\n")
+            print("HEADDERS: ", r.headers)
             rr.headers["Content-Type"] = r.headers['Content-Type']
+
+        #HANDLE OTHERS
         else:
             print("OTHER")
             url = "https://" + args.get("q")
@@ -131,6 +127,8 @@ def search(u):
 
             rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
             rr.headers["Content-Type"] = r.headers['Content-Type']
+    
+    #IF SITE 404's        
     except:
         rr = ""
 
