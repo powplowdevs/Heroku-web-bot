@@ -28,7 +28,7 @@ app = Flask(__name__)
 @app.route('/')
 def home():
     print("HOME")
-    usage = 'Enter a valid URL into the serach bar after this URL such as -> /https/www.google.com'
+    usage = 'Enter a valid URL into the serach bar after this URL such as -> /h/google.com'
     return usage
 
 #BASIC URLS
@@ -87,9 +87,6 @@ def root(url):
 
         return rr
 
-def page_not_found(e):
-  return "404"
-
 
 @app.route('/<u>', methods=['GET'])
 def search(u):
@@ -139,28 +136,5 @@ def search(u):
 
     return rr
 
-# #SEARCH GOOGLE
-# @app.route('/<url>')
-# def search_google_land(url):
-#     print("PASSED A /URL URL IS: " + url)    
-#     if url == "search":
-#         print("SEARCHING ON GOOGLE")
-#         url = 'https://www.google.com/' + url
-#         r = requests.get(url)
-#         rr = Response(response=r.content, status=r.status_code)
-#         rr.headers["Content-Type"] = r.headers['Content-Type']
-#         return rr
-#     return ""
-
-import warnings
-
-def fxn():
-    warnings.warn("deprecated", DeprecationWarning)
-
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore")
-    fxn()
-
 if __name__ == '__main__':
-    app.register_error_handler(404, page_not_found)
     app.run()
