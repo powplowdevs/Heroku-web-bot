@@ -4,20 +4,13 @@
 
     <head>
         
-        <title>Test heroku site</title>
-        <link href="Main.css" rel="stylesheet" type="text/css">
+        <title>PyBrows</title>
+        <link href="{{ url_for('static', filename= 'css/style.css') }}" rel="stylesheet" type="text/css">
 
     </head>
 
     <body>
-        <script>
-            function openSite(){
-                window.open("https://google.com","_self")
-            }
-        </script>
-        
-        <button id="button" onclick="openSite()">Go!</button>
-
+        <p>Home page</p>
     </body>
 
 </html>

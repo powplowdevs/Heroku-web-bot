@@ -3,7 +3,7 @@ import os
 import requests
 from lxml import html
 
-from flask import Flask
+from flask import Flask, render_template
 from flask import Response
 from flask import request
 from flask import request as re
@@ -15,8 +15,7 @@ app = Flask(__name__)
 #MAIN ROUTE
 @app.route('/')
 def home():
-    usage = 'Enter a valid URL into the serach bar after this URL such as -> /h/google.com'
-    return usage
+    return render_template('index.html')
 
 #HANDLE BASIC URLS
 @app.route('/h/<url>')
