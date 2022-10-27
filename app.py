@@ -23,6 +23,7 @@ def root(url):
     try:
         #GRAB SITE HTML
         r = requests.get(url)
+        
         #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
         new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
         
@@ -32,7 +33,7 @@ def root(url):
         #CREATE RETRUN OBJECT
         rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
         rr.headers["Content-Type"] = r.headers['Content-Type']
-
+        
         #HANDLE 404
         if str(r.status_code) == "404":
             #TRY URL BUT NOW WITH "https://google.com/" INFRONT
@@ -50,7 +51,7 @@ def root(url):
             #CREATE RETRUN OBJECT
             rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
             rr.headers["Content-Type"] = r.headers['Content-Type']
-
+                   
             #RETURN
             return rr
 
@@ -70,7 +71,7 @@ def root(url):
         #CREATE RETRUN OBJECT
         rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
         rr.headers["Content-Type"] = r.headers['Content-Type']
-
+            
         #RETURN
         return rr
 
@@ -101,7 +102,7 @@ def search(u):
         #HANDLE OPEN SITE
         elif len(name) >= 4 and name[0:5] == "https":
             url = args.get("q")
-            print("SITE URL: ",)
+            print("SITE URL: ", url)
 
             r = requests.get(url)
             #new = (r.content).decode("windows-1252").replace('src="','src="' + str(r.url))
@@ -109,6 +110,7 @@ def search(u):
             print("Fecthing: " + str(r.url))
 
             rr = Response(response=r.content, status=r.status_code)
+            r.headers["X-Content-Type-Options"] = "nosniff"
             print("CONTENT: ", r.content)
             print("\n")
             print("HEADDERS: ", r.headers)
