@@ -8,3 +8,6 @@ LINKS:
 Site: https://py-pro-prox.herokuapp.com
 Site Home page: https://py-pro-prox.herokuapp.com/h
 Site but with google: https://py-pro-prox.herokuapp.com/h/google.com
+
+
+NOTE: in-web-browser links no longer are supportted 
