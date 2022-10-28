@@ -4,7 +4,8 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| Beta    | :white_check_mark: |
+| py-pro-prox Beta    | :white_check_mark: |
+| in-web-browser Beta    | ❌ |
 
 
 ## Reporting a Vulnerability
