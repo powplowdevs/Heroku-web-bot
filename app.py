@@ -139,7 +139,7 @@ def search(u):
 
 @app.errorhandler(404) 
 def invalid_route(e): 
-    url = current_domain + (request.url).replace("http://https://py-pro-prox.herokuapp.com/", "")
+    url = current_domain + (request.url).replace("https://py-pro-prox.herokuapp.com/", "")
     
     
     print("SITE URL: ", url)
