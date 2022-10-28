@@ -4,6 +4,7 @@ import requests
 from lxml import html
 
 from flask import Flask, render_template
+from flask import jsonify
 from flask import Response
 from flask import request
 from flask import request as re
@@ -11,6 +12,8 @@ from flask import request as re
 #APP
 app = Flask(__name__)
 
+#vars
+current_domain = ""
 
 #MAIN ROUTE
 @app.route('/')
@@ -78,6 +81,8 @@ def root(url):
 
 @app.route('/<u>', methods=['GET'])
 def search(u):
+    global current_domain
+
     #GRAB ALL ARGS FOR SITE
     args = request.args
     #GRAB URL FOR SITE
@@ -102,6 +107,7 @@ def search(u):
         #HANDLE OPEN SITE
         elif len(name) >= 4 and name[0:5] == "https":
             url = args.get("q")
+            current_domain = url
             print("SITE URL: ", url)
 
             r = requests.get(url)
@@ -111,11 +117,7 @@ def search(u):
 
             rr = Response(response=r.content, status=r.status_code)
             r.headers["X-Content-Type-Options"] = "nosniff"
-            print("CONTENT: ", r.content)
-            print("\n")
-            print("HEADDERS: ", r.headers)
             rr.headers["Content-Type"] = r.headers['Content-Type']
-
         #HANDLE OTHERS
         else:
             print("OTHER")
@@ -132,6 +134,24 @@ def search(u):
     #IF SITE 404's        
     except:
         rr = ""
+
+    return rr
+
+@app.errorhandler(404) 
+def invalid_route(e): 
+    url = current_domain + (request.url).replace("http://127.0.0.1:5000/", "")
+    
+    
+    print("SITE URL: ", url)
+
+    r = requests.get(url)
+    #new = (r.content).decode("windows-1252").replace('src="','src="' + str(r.url))
+        
+    print("Fecthing: " + str(r.url))
+
+    rr = Response(response=r.content, status=r.status_code)
+    r.headers["X-Content-Type-Options"] = "nosniff"
+    rr.headers["Content-Type"] = r.headers['Content-Type']
 
     return rr
 
