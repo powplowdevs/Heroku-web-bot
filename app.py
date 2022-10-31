@@ -14,6 +14,14 @@ app = Flask(__name__)
 
 #vars
 current_domain = ""
+use_prox = True
+
+http_proxy  = "http://20.81.62.32:3128"
+
+
+proxies = { 
+              "http"  : http_proxy
+            }
 
 #MAIN ROUTE
 @app.route('/')
@@ -25,7 +33,10 @@ def home():
 def root(url): 
     try:
         #GRAB SITE HTML
-        r = requests.get(url)
+        if use_prox:
+            r = requests.get(url, proxies=proxies)
+        else:
+            r = requests.get(url)
         
         #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
         new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
@@ -47,7 +58,10 @@ def root(url):
             print("url: ", url)
 
             #GRAB SITE HTML
-            r = requests.get(url)
+            if use_prox:
+                r = requests.get(url, proxies=proxies)
+            else:
+                r = requests.get(url)
             #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
             new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
 
@@ -67,7 +81,10 @@ def root(url):
         url = "https://" + url
 
         #GRAB SITE HTML
-        r = requests.get(url)
+        if use_prox:
+            r = requests.get(url, proxies=proxies)
+        else:
+            r = requests.get(url)
         #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
         new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
         
@@ -96,7 +113,10 @@ def search(u):
             print("SEARCHING: ", url)
             
             #GRAB SITE HTML
-            r = requests.get(url)
+            if use_prox:
+                r = requests.get(url, proxies=proxies)
+            else:
+                r = requests.get(url)
             #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
             new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
             
@@ -110,7 +130,10 @@ def search(u):
             current_domain = url
             print("SITE URL: ", url)
 
-            r = requests.get(url)
+            if use_prox:
+                r = requests.get(url, proxies=proxies)
+            else:
+                r = requests.get(url)
             #new = (r.content).decode("windows-1252").replace('src="','src="' + str(r.url))
                 
             print("Fecthing: " + str(r.url))
@@ -123,7 +146,10 @@ def search(u):
             print("OTHER")
             url = "https://" + args.get("q")
 
-            r = requests.get(url)
+            if use_prox:
+                r = requests.get(url, proxies=proxies)
+            else:
+                r = requests.get(url)
             new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
 
             print("Fecthing: " + str(r.url))
@@ -144,7 +170,10 @@ def invalid_route(e):
     
     print("SITE URL: ", url)
 
-    r = requests.get(url)
+    if use_prox:
+        r = requests.get(url, proxies=proxies)
+    else:
+        r = requests.get(url)
     #new = (r.content).decode("windows-1252").replace('src="','src="' + str(r.url))
         
     print("Fecthing: " + str(r.url))
