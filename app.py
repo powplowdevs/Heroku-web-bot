@@ -165,7 +165,7 @@ def search(u):
 
 @app.errorhandler(404) 
 def invalid_route(e): 
-    url = current_domain + (request.url).replace("https://heroku-web-on4nsv6a9-powplowdevs.vercel.app/", "")
+    url = current_domain + (request.url).replace("https://heroku-web-bot.vercel.app/", "")
     
     
     print("SITE URL: ", url)
