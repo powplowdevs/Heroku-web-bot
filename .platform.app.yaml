@@ -1,23 +1,26 @@
-name: 'app'
-
-type: 'python:3.10'
+name: pyproprox 
+type: python:3.10
 
 web:
-    upstream:
-        # Send requests to the app server through a unix socket
-        # Its location is defined in the SOCKET environment variable
-        socket_family: "unix"
+  commands:
+    start: "gunicorn -b $PORT app.py:app"
+  locations:
+    "/":
+      root: ""
+      passthru: true
+      allow: false
+    "/static":
+      root: "static/"
+      allow: true
 
-    # Start your app with the configuration you define
-    # You can replace the file location with your location
-    commands:
-        start: "uwsgi --ini uwsgi.ini"
+hooks:
+  build: |
+    pip install -r requirements.txt
+    pip install -e .
+    pip install gunicorn
 
-    locations:
-        # The folder from which to serve static assets
-        "/":
-            root: "public"
-            passthru: true
-            expires: 1h
-            
-            
+mounts:
+  "/tmp": "shared:files/tmp"
+  "/logs": "shared:files/logs"
+
+
