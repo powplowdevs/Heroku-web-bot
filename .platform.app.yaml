@@ -11,7 +11,7 @@ web:
     # Start your app with the configuration you define
     # You can replace the file location with your location
     commands:
-        start: "uwsgi --ini conf/uwsgi.ini"
+        start: "uwsgi --ini uwsgi.ini"
 
     locations:
         # The folder from which to serve static assets
