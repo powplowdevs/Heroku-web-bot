@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 #vars
 current_domain = ""
-use_prox = True
+use_prox = False
 
 http_proxy  = "http://20.81.62.32:3128"
 
