@@ -27,7 +27,7 @@ proxies = {
 #MAIN ROUTE
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return "hello" #render_template('index.html')
 
 #HANDLE BASIC URLS
 @app.route('/h/<url>')
