@@ -2,6 +2,9 @@ name: pyproprox
 type: python:3.10
 
 web:
+  upstream:
+        socket_family: tcp
+        protocol: http
   commands:
     start: "gunicorn -b $PORT app:app"
   locations:
