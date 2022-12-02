@@ -24,4 +24,4 @@ mounts:
   "/logs": "shared:files/logs"
 
 
-disk: 128
+disk: 512
