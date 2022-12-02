@@ -1,5 +1,5 @@
 # Heroku-web-bot
-A bare bones flask web bot hosted on heroku
+A bare bones flask web bot hosted on heroku (and soon platfromSH)
 
 Goal:
 This project hopes to be able to create a web browser with python and flask that can work while hosted on heroku.
