@@ -165,7 +165,7 @@ def search(u):
 
 @app.errorhandler(404) 
 def invalid_route(e): 
-    url = current_domain + (request.url).replace("https://main-bvxea6i-s5oyiguruy3ea.us-2.platformsh.site/", "")
+    url = current_domain + (request.url).replace("https://pyproprox-app.azurewebsites.net/", "")
     
     
     print("SITE URL: ", url)
