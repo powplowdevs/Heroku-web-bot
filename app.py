@@ -8,7 +8,6 @@ from flask import jsonify
 from flask import Response
 from flask import request
 from flask import request as re
-from werkzeug.contrib.fixers import ProxyFix
 
 #APP
 app = Flask(__name__)
@@ -185,5 +184,6 @@ def invalid_route(e):
 
     return rr
 
-  
-app.wsgi_app = ProxyFix(app.wsgi_app)
+
+if __name__ == '__main__':
+   app.run()
