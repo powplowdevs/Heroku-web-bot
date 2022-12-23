@@ -8,6 +8,7 @@ from flask import jsonify
 from flask import Response
 from flask import request
 from flask import request as re
+import os
 
 #APP
 app = Flask(__name__)
@@ -16,17 +17,16 @@ app = Flask(__name__)
 current_domain = ""
 use_prox = True
 
-http_proxy  = "http://20.81.62.32:3128"
 
-
-proxies = { 
-              "http"  : http_proxy
-            }
+proxies = {
+"http": os.environ['http://dz01mqebge6oii:xtof481j3do2q5gu5ta1hj79yqo@us-east-static-09.quotaguard.com:9293'],
+"https": os.environ['http://dz01mqebge6oii:xtof481j3do2q5gu5ta1hj79yqo@us-east-static-09.quotaguard.com:9293']
+}
 
 #MAIN ROUTE
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return "hello" #render_template('index.html')
 
 #HANDLE BASIC URLS
 @app.route('/h/<url>')
@@ -165,7 +165,7 @@ def search(u):
 
 @app.errorhandler(404) 
 def invalid_route(e): 
-    url = current_domain + (request.url).replace("https://py-pro-prox.herokuapp.com/", "")
+    url = current_domain + (request.url).replace("https://pyproprox-app.azurewebsites.net/", "")
     
     
     print("SITE URL: ", url)
@@ -184,5 +184,6 @@ def invalid_route(e):
 
     return rr
 
+
 if __name__ == '__main__':
-    app.run()
+   app.run()
