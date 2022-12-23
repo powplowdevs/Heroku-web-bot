@@ -15,8 +15,7 @@ app = Flask(__name__)
 
 #vars
 current_domain = ""
-
-
+use_prox = True
 
 proxies = {
 "http": os.environ['http://dz01mqebge6oii:xtof481j3do2q5gu5ta1hj79yqo@us-east-static-09.quotaguard.com:9293'],
