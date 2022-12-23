@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 #vars
 current_domain = ""
-use_prox = True
+
 
 
 proxies = {
@@ -26,7 +26,7 @@ proxies = {
 #MAIN ROUTE
 @app.route('/')
 def home():
-    return "hello" #render_template('index.html')
+    return "home"
 
 #HANDLE BASIC URLS
 @app.route('/h/<url>')
@@ -186,4 +186,4 @@ def invalid_route(e):
 
 
 if __name__ == '__main__':
-   app.run()
+    app.run()
