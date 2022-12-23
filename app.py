@@ -32,10 +32,8 @@ def home():
 def root(url): 
     try:
         #GRAB SITE HTML
-        if use_prox:
-            r = requests.get(url, proxies=proxies)
-        else:
-            r = requests.get(url)
+
+        r = requests.get(url)
         
         #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
         new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
@@ -57,10 +55,7 @@ def root(url):
             print("url: ", url)
 
             #GRAB SITE HTML
-            if use_prox:
-                r = requests.get(url, proxies=proxies)
-            else:
-                r = requests.get(url)
+            r = requests.get(url)
             #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
             new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
 
@@ -80,10 +75,7 @@ def root(url):
         url = "https://" + url
 
         #GRAB SITE HTML
-        if use_prox:
-            r = requests.get(url, proxies=proxies)
-        else:
-            r = requests.get(url)
+        r = requests.get(url)
         #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
         new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
         
@@ -112,10 +104,7 @@ def search(u):
             print("SEARCHING: ", url)
             
             #GRAB SITE HTML
-            if use_prox:
-                r = requests.get(url, proxies=proxies)
-            else:
-                r = requests.get(url)
+            r = requests.get(url)
             #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
             new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
             
