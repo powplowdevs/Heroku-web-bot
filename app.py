@@ -18,8 +18,8 @@ current_domain = ""
 use_prox = True
 
 proxies = {
-"http": 'url',
-"https": 'url'
+"http": os.environ['QUOTAGUARDSTATIC_URL'],
+"https": os.environ['QUOTAGUARDSTATIC_URL']
 }
 
 #MAIN ROUTE
