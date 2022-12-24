@@ -18,8 +18,8 @@ current_domain = ""
 use_prox = True
 
 proxies = {
-"http": 'http://dz01mqebge6oii:xtof481j3do2q5gu5ta1hj79yqo@us-east-static-09.quotaguard.com:9293',
-"https": 'http://dz01mqebge6oii:xtof481j3do2q5gu5ta1hj79yqo@us-east-static-09.quotaguard.com:9293'
+"http": 'url',
+"https": 'url'
 }
 
 #MAIN ROUTE
