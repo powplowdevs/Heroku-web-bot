@@ -153,7 +153,7 @@ def search(u):
 
 @app.errorhandler(404) 
 def invalid_route(e): 
-    url = current_domain + (request.url).replace("https://pyproprox-app.azurewebsites.net/", "")
+    url = current_domain + (request.url).replace("https://flask-online-browser.herokuapp.com/", "")
     
     
     print("SITE URL: ", url)
