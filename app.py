@@ -157,12 +157,12 @@ def search(u):
 def invalid_route(e): 
     url = current_domain + (request.url).replace("https://py-pro-proxy.herokuapp.com/", "")
     
-    print("SITE URL: ", url)
+    print("SITE URL 404: ", url)
 
     r = requests.get(url)
     #new = (r.content).decode("windows-1252").replace('src="','src="' + str(r.url))
         
-    print("Fecthing: " + str(r.url))
+    print("Fecthing 404: " + str(r.url))
 
     rr = Response(response=r.content, status=r.status_code)
     r.headers["X-Content-Type-Options"] = "nosniff"
