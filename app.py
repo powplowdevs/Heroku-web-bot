@@ -142,7 +142,7 @@ def search(u):
                 r = requests.get(url)
             new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
 
-            print("Fecthing: " + str(r.url))
+            print("Fecthing other: " + str(r.url))
 
             rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
             rr.headers["Content-Type"] = r.headers['Content-Type']
