@@ -119,6 +119,7 @@ def search(u):
             print("SITE URL: ", url)
 
             if use_prox:
+                print("useing proxy")
                 r = requests.get(url, proxies=proxies)
             else:
                 r = requests.get(url)
@@ -135,6 +136,7 @@ def search(u):
             url = "https://" + args.get("q")
 
             if use_prox:
+                print("useing proxy other")
                 r = requests.get(url, proxies=proxies)
             else:
                 r = requests.get(url)
@@ -155,13 +157,9 @@ def search(u):
 def invalid_route(e): 
     url = current_domain + (request.url).replace("https://py-pro-proxy.herokuapp.com/", "")
     
-    
     print("SITE URL: ", url)
 
-    if use_prox:
-        r = requests.get(url, proxies=proxies)
-    else:
-        r = requests.get(url)
+    r = requests.get(url)
     #new = (r.content).decode("windows-1252").replace('src="','src="' + str(r.url))
         
     print("Fecthing: " + str(r.url))
