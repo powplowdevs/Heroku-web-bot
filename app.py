@@ -44,6 +44,8 @@ def root(url):
         #CREATE RETRUN OBJECT
         rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
         rr.headers["Content-Type"] = r.headers['Content-Type']
+        rr.headers["Access-Control-Request-Method"] = "post"
+        rr.headers["Access-Control-Request-Headers"] = "X-Requested-With"
         
         #HANDLE 404
         if str(r.status_code) == "404":
@@ -62,6 +64,9 @@ def root(url):
             #CREATE RETRUN OBJECT
             rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
             rr.headers["Content-Type"] = r.headers['Content-Type']
+            rr.headers["Access-Control-Request-Method"] = "post"
+            rr.headers["Access-Control-Request-Headers"] = "X-Requested-With"
+            
                    
             #RETURN
             return rr
@@ -82,6 +87,8 @@ def root(url):
         #CREATE RETRUN OBJECT
         rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
         rr.headers["Content-Type"] = r.headers['Content-Type']
+        rr.headers["Access-Control-Request-Method"] = "post"
+        rr.headers["Access-Control-Request-Headers"] = "X-Requested-With"
             
         #RETURN
         return rr
@@ -111,6 +118,8 @@ def search(u):
             #CREATE RETRUN OBJECT
             rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
             rr.headers["Content-Type"] = r.headers['Content-Type']
+            rr.headers["Access-Control-Request-Method"] = "post"
+            rr.headers["Access-Control-Request-Headers"] = "X-Requested-With"
 
         #HANDLE OPEN SITE
         elif len(name) >= 4 and name[0:5] == "https":
@@ -130,6 +139,8 @@ def search(u):
             rr = Response(response=r.content, status=r.status_code)
             r.headers["X-Content-Type-Options"] = "nosniff"
             rr.headers["Content-Type"] = r.headers['Content-Type']
+            rr.headers["Access-Control-Request-Method"] = "post"
+            rr.headers["Access-Control-Request-Headers"] = "X-Requested-With"
         #HANDLE OTHERS
         else:
             print("OTHER")
@@ -146,6 +157,8 @@ def search(u):
 
             rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
             rr.headers["Content-Type"] = r.headers['Content-Type']
+            rr.headers["Access-Control-Request-Method"] = "post"
+            rr.headers["Access-Control-Request-Headers"] = "X-Requested-With"
     
     #IF SITE 404's        
     except:
@@ -167,6 +180,8 @@ def invalid_route(e):
     rr = Response(response=r.content, status=r.status_code)
     r.headers["X-Content-Type-Options"] = "nosniff"
     rr.headers["Content-Type"] = r.headers['Content-Type']
+    rr.headers["Access-Control-Request-Method"] = "post"
+    rr.headers["Access-Control-Request-Headers"] = "X-Requested-With"
 
     return rr
 
