@@ -8,10 +8,12 @@ from flask import jsonify
 from flask import Response
 from flask import request
 from flask import request as re
+from flask_cors import CORS, cross_origin
 import os
 
 #APP
 app = Flask(__name__)
+CORS(app, support_credentials=True)
 
 #vars
 current_domain = ""

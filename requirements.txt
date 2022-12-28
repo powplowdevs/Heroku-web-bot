@@ -10,3 +10,4 @@ MarkupSafe==2.1.1
 Werkzeug==2.2.2
 requests
 lxml
+flask_cors
