@@ -17,6 +17,7 @@ CORS(app, support_credentials=True)
 
 #vars
 current_domain = ""
+site_url = "https://py-pro-proxy.herokuapp.com/"
 use_prox = True
 
 proxies = {
@@ -32,10 +33,11 @@ def home():
 #HANDLE BASIC URLS
 @app.route('/h/<url>')
 def root(url): 
+    global current_domain
     try:
         #GRAB SITE HTML
-
         r = requests.get(url)
+        current_domain = url
         
         #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
         new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
@@ -53,6 +55,7 @@ def root(url):
         if str(r.status_code) == "404":
             #TRY URL BUT NOW WITH "https://google.com/" INFRONT
             url = "https://google.com/" + url
+            current_domain = url
 
             #DISPLAY ERROR URL
             print("Error fetching base url, new url is: " + url)
@@ -80,6 +83,7 @@ def root(url):
 
         #EDIT URL TO HAVE https:// BEFORE
         url = "https://" + url
+        current_domain = url
 
         #GRAB SITE HTML
         r = requests.get(url)
@@ -126,15 +130,16 @@ def search(u):
         #HANDLE OPEN SITE
         elif len(name) >= 4 and name[0:5] == "https":
             url = args.get("q")
-            current_domain = url
+            temp_url = url.replace("https://","")
+            current_domain =  "https://" + temp_url[:temp_url.index("/")+1]
+        
             print("SITE URL: ", url)
-
             if use_prox:
                 print("useing proxy")
                 r = requests.get(url, proxies=proxies)
             else:
                 r = requests.get(url)
-            #new = (r.content).decode("windows-1252").replace('src="','src="' + str(r.url))
+            new = (r.content).decode("windows-1252").replace('src="','src="https://' + current_domain)
                 
             print("Fecthing: " + str(r.url))
 
@@ -170,13 +175,15 @@ def search(u):
 
 @app.errorhandler(404) 
 def invalid_route(e): 
-    url = current_domain + (request.url).replace("https://py-pro-proxy.herokuapp.com/", "")
-    
+    if current_domain != "https://google.com ":
+        url = current_domain + (request.url).replace(site_url, "")
+    else:
+        url = current_domain + (request.url).replace(site_url, "/")
+        
     print("SITE URL 404: ", url)
 
     r = requests.get(url)
-    #new = (r.content).decode("windows-1252").replace('src="','src="' + str(r.url))
-        
+
     print("Fecthing 404: " + str(r.url))
 
     rr = Response(response=r.content, status=r.status_code)
