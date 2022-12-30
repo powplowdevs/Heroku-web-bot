@@ -139,15 +139,16 @@ def search(u):
                 r = requests.get(url, proxies=proxies)
             else:
                 r = requests.get(url)
-            new = (r.content).decode("windows-1252").replace('src="','src="https://' + current_domain)
-                
-            print("Fecthing: " + str(r.url))
 
-            rr = Response(response=r.content, status=r.status_code)
+            new = (r.content).decode("windows-1252").replace('href="','href="' + site_url + "url?q=" + current_domain)
+            new = (r.content).decode("windows-1252").replace('href="/','href="' + site_url + "url?q=" + current_domain)
+
+            rr = Response(response=new, status=r.status_code)
             r.headers["X-Content-Type-Options"] = "nosniff"
             rr.headers["Content-Type"] = r.headers['Content-Type']
             rr.headers["Access-Control-Request-Method"] = "post"
             rr.headers["Access-Control-Request-Headers"] = "X-Requested-With"
+            
         #HANDLE OTHERS
         else:
             print("OTHER")
@@ -158,7 +159,9 @@ def search(u):
                 r = requests.get(url, proxies=proxies)
             else:
                 r = requests.get(url)
-            new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
+                
+            new = (r.content).decode("windows-1252").replace('href="','href="' + site_url + "url?q=" + current_domain)
+            new = (r.content).decode("windows-1252").replace('href="/','href="' + site_url + "url?q=" + current_domain)
 
             print("Fecthing other: " + str(r.url))
 
@@ -185,8 +188,11 @@ def invalid_route(e):
     r = requests.get(url)
 
     print("Fecthing 404: " + str(r.url))
+    
+    new = (r.content).decode("windows-1252").replace('href="','href="' + site_url + "url?q=" + current_domain)
+    new = (r.content).decode("windows-1252").replace('href="/','href="' + site_url + "url?q=" + current_domain)
 
-    rr = Response(response=r.content, status=r.status_code)
+    rr = Response(response=new, status=r.status_code)
     r.headers["X-Content-Type-Options"] = "nosniff"
     rr.headers["Content-Type"] = r.headers['Content-Type']
     rr.headers["Access-Control-Request-Method"] = "post"
