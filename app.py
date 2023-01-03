@@ -18,7 +18,7 @@ CORS(app, support_credentials=True)
 #vars
 current_domain = ""
 site_url = "https://py-pro-proxy.herokuapp.com/"
-use_prox = True
+use_prox = False
 
 proxies = {
 "http": os.environ['QUOTAGUARDSTATIC_URL'],
