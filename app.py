@@ -19,7 +19,7 @@ CORS(app, support_credentials=True)
 current_domain = ""
 site_url = "https://py-pro-proxy.herokuapp.com/"
 prox_url = "https://api.allorigins.win/raw?url="
-use_prox = False
+use_prox = True
 
 proxies = {
 "http": os.environ['QUOTAGUARDSTATIC_URL'],
