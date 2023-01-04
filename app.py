@@ -18,6 +18,7 @@ CORS(app, support_credentials=True)
 #vars
 current_domain = ""
 site_url = "https://py-pro-proxy.herokuapp.com/"
+prox_url = "https://api.allorigins.win/raw?url="
 use_prox = False
 
 proxies = {
@@ -129,7 +130,8 @@ def search(u):
 
         #HANDLE OPEN SITE
         elif len(name) >= 4 and name[0:5] == "https":
-            url = args.get("q")
+            url = prox_url + args.get("q")
+            print("URL TO SITE IS: ", url)
             temp_url = url.replace("https://","")
             current_domain =  "https://" + temp_url[:temp_url.index("/")+1]
         
@@ -139,6 +141,7 @@ def search(u):
                 r = requests.get(url, proxies=proxies)
             else:
                 r = requests.get(url)
+                print(r.content)
 
             new = (r.content).decode("windows-1252").replace('href="','href="' + site_url + "url?q=" + current_domain)
             new = (r.content).decode("windows-1252").replace('href="/','href="' + site_url + "url?q=" + current_domain)
