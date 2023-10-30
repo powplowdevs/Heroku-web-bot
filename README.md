@@ -1,6 +1,6 @@
 # Heroku-web-bot
 
-**`Heroku has stoped support for free dynos on their sites. All links are down. We are woking on a fix and should be back up soon`**
+**`PROJECT DEPRECATED`**
 
 A bare bones flask web bot hosted on [heroku](https://www.heroku.com)
 
