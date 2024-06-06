@@ -3,45 +3,51 @@ import requests
 from flask import Flask, jsonify, Response, request
 from flask_cors import CORS, cross_origin
 from bs4 import BeautifulSoup
+from urllib.parse import urljoin
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
 
-# CORS Proxy URL
+#CORS Proxy URL
 corbsProxUrl = "https://api.allorigins.win/raw?url="
 
-# Vars
+#Vars
 currentDomain = ""
-siteUrl = "https://py-pro-proxy.herokuapp.com/"  # or "http://127.0.0.1:5000/"
+#siteUrl = "https://py-pro-proxy.herokuapp.com/"  
+siteUrl = "http://127.0.0.1:5000/"
 useProx = False
 useCorbsProx = False
 
 #Proxies example (commented out)
-# proxies = {
-#     "http": os.environ['QUOTAGUARDSTATIC_URL'],
-#     "https": os.environ['QUOTAGUARDSTATIC_URL']
-# }
+#proxies = {
+#   "http": os.environ['QUOTAGUARDSTATIC_URL'],
+#   "https": os.environ['QUOTAGUARDSTATIC_URL']
+#}
 
-# Function to modify URLs in HTML content
-def modifyUrls(content, base_url):
+#Function to modify URLs in HTML content
+def modifyUrls(content, baseUrl):
     try:
         try:
             content = content.decode("windows-1252")
         except UnicodeDecodeError:
             content = content.decode("utf-8")
         
-        # Parse HTML content
+        #Parse HTML content
         soup = BeautifulSoup(content, 'html.parser')
         
-        # Modify href attributes
-        for link in soup.find_all('a', href=True):
-            if link['href'].startswith(base_url):
-                link['href'] = link['href'].replace(base_url, '')
+        #Modify href attributes in all tags
+        for element in soup.find_all(href=True):
+            oldUrl = element['href']
+            absoluteUrl = urljoin(currentDomain, element['href'])
+            print("\nReplaced: ", oldUrl, " With: ", absoluteUrl, "\n")
+            element['href'] = absoluteUrl
 
-        # Modify src attributes
-        for img in soup.find_all('img', src=True):
-            if img['src'].startswith(base_url):
-                img['src'] = img['src'].replace(base_url, '')
+        #Modify src attributes in all tags
+        for element in soup.find_all(src=True):
+            oldUrl = element['src']
+            absoluteUrl = urljoin(currentDomain, element['src'])
+            print("\nReplaced: ", oldUrl, " With: ", absoluteUrl, "\n")
+            element['src'] = absoluteUrl
 
         return str(soup)
     except Exception as e:
@@ -67,7 +73,7 @@ def root(url):
     global currentDomain
     try:
         fullUrl = f"https://{url}" if not url.startswith('http') else url
-        fullUrl = trimUrl(fullUrl)
+        fullUrl = fullUrl
         print(f"Fetching: {fullUrl}")
 
         r = requests.get(fullUrl)
@@ -85,7 +91,7 @@ def root(url):
     except Exception as e:
         try:
             fullUrl = f"https://{url}" if not url.startswith('http') else url
-            fullUrl = trimUrl(fullUrl)
+            fullUrl = fullUrl
             print(f"2nd pass. Fetching: {fullUrl}")
 
             r = requests.get(fullUrl)
