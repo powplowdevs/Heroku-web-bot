@@ -70,7 +70,7 @@ def root(url):
         fullUrl = trimUrl(fullUrl)
         print(f"Fetching: {fullUrl}")
 
-        r = requests.get(corbsProxUrl + fullUrl)
+        r = requests.get(fullUrl)
         currentDomain = fullUrl
 
         content = r.content
@@ -88,7 +88,7 @@ def root(url):
             fullUrl = trimUrl(fullUrl)
             print(f"2nd pass. Fetching: {fullUrl}")
 
-            r = requests.get(corbsProxUrl + fullUrl)
+            r = requests.get(fullUrl)
             currentDomain = fullUrl
 
             content = r.content
