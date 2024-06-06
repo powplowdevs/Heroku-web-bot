@@ -12,15 +12,15 @@ corbsProxUrl = "https://api.allorigins.win/raw?url="
 
 # Vars
 currentDomain = ""
-siteUrl = "http://127.0.0.1:5000/"  # or "https://py-pro-proxy.herokuapp.com/"
+siteUrl = "https://py-pro-proxy.herokuapp.com/"  # or "http://127.0.0.1:5000/"
 useProx = False
 useCorbsProx = False
 
-# Proxies example (commented out)
-# proxies = {
-#     "http": os.environ['QUOTAGUARDSTATIC_URL'],
-#     "https": os.environ['QUOTAGUARDSTATIC_URL']
-# }
+#Proxies example (commented out)
+proxies = {
+    "http": os.environ['QUOTAGUARDSTATIC_URL'],
+    "https": os.environ['QUOTAGUARDSTATIC_URL']
+}
 
 # Function to modify URLs in HTML content
 def modifyUrls(content, base_url):
