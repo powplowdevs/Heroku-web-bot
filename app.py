@@ -1,212 +1,165 @@
-#IMPORTS
 import os
 import requests
-from lxml import html
-
-from flask import Flask, render_template
-from flask import jsonify
-from flask import Response
-from flask import request
-from flask import request as re
+from flask import Flask, jsonify, Response, request
 from flask_cors import CORS, cross_origin
-import os
+from bs4 import BeautifulSoup
 
-#APP
 app = Flask(__name__)
 CORS(app, support_credentials=True)
 
-#vars
-current_domain = ""
-site_url = "https://py-pro-proxy.herokuapp.com/"
-corbs_prox_url = "https://api.allorigins.win/raw?url="
-use_prox = False
-use_corbs_prox = False
+# CORS Proxy URL
+corbsProxUrl = "https://api.allorigins.win/raw?url="
 
-proxies = {
-"http": os.environ['QUOTAGUARDSTATIC_URL'],
-"https": os.environ['QUOTAGUARDSTATIC_URL']
-}
+# Vars
+currentDomain = ""
+siteUrl = "http://127.0.0.1:5000/"  # or "https://py-pro-proxy.herokuapp.com/"
+useProx = False
+useCorbsProx = False
 
-#MAIN ROUTE
+# Proxies example (commented out)
+# proxies = {
+#     "http": os.environ['QUOTAGUARDSTATIC_URL'],
+#     "https": os.environ['QUOTAGUARDSTATIC_URL']
+# }
+
+# Function to modify URLs in HTML content
+def modifyUrls(content, base_url):
+    try:
+        try:
+            content = content.decode("windows-1252")
+        except UnicodeDecodeError:
+            content = content.decode("utf-8")
+        
+        # Parse HTML content
+        soup = BeautifulSoup(content, 'html.parser')
+        
+        # Modify href attributes
+        for link in soup.find_all('a', href=True):
+            if link['href'].startswith(base_url):
+                link['href'] = link['href'].replace(base_url, '')
+
+        # Modify src attributes
+        for img in soup.find_all('img', src=True):
+            if img['src'].startswith(base_url):
+                img['src'] = img['src'].replace(base_url, '')
+
+        return str(soup)
+    except Exception as e:
+        print(f"Error modifying URLs: {e}")
+        return Response("Error processing the HTML content", status=500)
+
+def trimUrl(url):
+    parts = url.split('/')
+    #Check if there are more than 3 parts (to avoid index errors)
+    if len(parts) > 3:
+        trimmedUrl = '/'.join(parts[:3]) + '/'
+    else:
+        trimmedUrl = url
+    return trimmedUrl
+
 @app.route('/')
 def home():
-    return "home"
+    return "Home page, add /h/google.com or /h/https://google.com to the end of the link above to open google."
 
-#HANDLE BASIC URLS
-@app.route('/h/<url>')
-def root(url): 
-    global current_domain
+@app.route('/h/<path:url>')
+@cross_origin(supports_credentials=True)
+def root(url):
+    global currentDomain
     try:
-        #GRAB SITE HTML
-        r = requests.get(url)
-        current_domain = url
-        
-        #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
-        new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
-        
-        #DISPLAY URL
-        print("Fecthing: " + str(r.url))
+        fullUrl = f"https://{url}" if not url.startswith('http') else url
+        fullUrl = trimUrl(fullUrl)
+        print(f"Fetching: {fullUrl}")
 
-        #CREATE RETRUN OBJECT
-        rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
-        rr.headers["Content-Type"] = r.headers['Content-Type']
-        rr.headers["Access-Control-Request-Method"] = "post"
-        rr.headers["Access-Control-Request-Headers"] = "X-Requested-With"
-        
-        #HANDLE 404
-        if str(r.status_code) == "404":
-            #TRY URL BUT NOW WITH "https://google.com/" INFRONT
-            url = "https://google.com/" + url
-            current_domain = url
+        r = requests.get(corbsProxUrl + fullUrl)
+        currentDomain = fullUrl
 
-            #DISPLAY ERROR URL
-            print("Error fetching base url, new url is: " + url)
-            print("url: ", url)
+        content = r.content
+        modifiedContent = modifyUrls(content, siteUrl + "h/")
+        response = Response(response=modifiedContent, status=r.status_code)
+        response.headers["Content-Type"] = r.headers['Content-Type']
+        response.headers["Access-Control-Request-Method"] = "post"
+        response.headers["Access-Control-Request-Headers"] = "X-Requested-With"
 
-            #GRAB SITE HTML
-            r = requests.get(url)
-            #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
-            new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
+        return response
+    
+    except Exception as e:
+        try:
+            fullUrl = f"https://{url}" if not url.startswith('http') else url
+            fullUrl = trimUrl(fullUrl)
+            print(f"2nd pass. Fetching: {fullUrl}")
 
-            #CREATE RETRUN OBJECT
-            rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
-            rr.headers["Content-Type"] = r.headers['Content-Type']
-            rr.headers["Access-Control-Request-Method"] = "post"
-            rr.headers["Access-Control-Request-Headers"] = "X-Requested-With"
-            
-                   
-            #RETURN
-            return rr
+            r = requests.get(corbsProxUrl + fullUrl)
+            currentDomain = fullUrl
 
-    #HANDLE 404
-    except:
-        #DISPLAY NEW URL
-        print("Error fetching [" + url + "]\nFull url: https://" + url)
+            content = r.content
+            modifiedContent = modifyUrls(content, siteUrl + "h/")
+            response = Response(response=modifiedContent, status=r.status_code)
+            response.headers["Content-Type"] = r.headers['Content-Type']
+            response.headers["Access-Control-Request-Method"] = "post"
+            response.headers["Access-Control-Request-Headers"] = "X-Requested-With"
 
-        #EDIT URL TO HAVE https:// BEFORE
-        url = "https://" + url
-        current_domain = url
-
-        #GRAB SITE HTML
-        r = requests.get(url)
-        #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
-        new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
-        
-        #CREATE RETRUN OBJECT
-        rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
-        rr.headers["Content-Type"] = r.headers['Content-Type']
-        rr.headers["Access-Control-Request-Method"] = "post"
-        rr.headers["Access-Control-Request-Headers"] = "X-Requested-With"
-            
-        #RETURN
-        return rr
-
+            return response
+        except Exception as e:
+            print(f"Error fetching [{url}]: {str(e)}")
+            return Response("Error fetching the requested URL", status=500)
 
 @app.route('/<u>', methods=['GET'])
+@cross_origin(supports_credentials=True)
 def search(u):
-    global current_domain
-
-    #GRAB ALL ARGS FOR SITE
+    global currentDomain
     args = request.args
-    #GRAB URL FOR SITE
-    name = args.get("q")
+    query = args.get("q")
 
     try:
-        #HANDLE GOOGLE SEARCH
-        if len(name) >= 4 and name[0:5] != "https" or len(name) < 4:
-            #DEFINE URL WITH THE URL WE WANT TO ACCESS
-            url = "https://www.google.com/search?q=" + args.get("q")
-            print("SEARCHING: ", url)
-            
-            #GRAB SITE HTML
-            r = requests.get(url)
-            #EDIT SOURCES IN HTML TO HAVE "https://www.google.com/" BEFORE THEM
-            new = (r.content).decode("windows-1252").replace('src="','src="https://www.google.com/')
-            
-            #CREATE RETRUN OBJECT
-            rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
-            rr.headers["Content-Type"] = r.headers['Content-Type']
-            rr.headers["Access-Control-Request-Method"] = "post"
-            rr.headers["Access-Control-Request-Headers"] = "X-Requested-With"
-
-        #HANDLE OPEN SITE
-        elif len(name) >= 4 and name[0:5] == "https":
-            if use_corbs_prox:
-                url = corbs_prox_url + args.get("q")
-            else:
-                url = args.get("q")
-
-            temp_url = url.replace("https://","")
-            current_domain =  "https://" + temp_url[:temp_url.index("/")+1]
-        
-            print("SITE URL: ", url)
-            if use_prox:
-                print("useing proxy")
-                r = requests.get(url, proxies=proxies)
-            else:
-                r = requests.get(url)
-                print(r.content)
-
-            new = (r.content).decode("windows-1252").replace('href="','href="' + site_url + "url?q=" + current_domain)
-            new = (r.content).decode("windows-1252").replace('href="/','href="' + site_url + "url?q=" + current_domain)
-
-            rr = Response(response=new, status=r.status_code)
-            r.headers["X-Content-Type-Options"] = "nosniff"
-            rr.headers["Content-Type"] = r.headers['Content-Type']
-            rr.headers["Access-Control-Request-Method"] = "post"
-            rr.headers["Access-Control-Request-Headers"] = "X-Requested-With"
-            
-        #HANDLE OTHERS
+        if query and (len(query) < 4 or not query.startswith("https")):
+            url = f"https://www.google.com/search?q={query}"
+            print(f"Searching: {url}")
         else:
-            print("OTHER")
-            url = "https://" + args.get("q")
+            url = query
 
-            if use_prox:
-                print("useing proxy other")
-                r = requests.get(url, proxies=proxies)
-            else:
-                r = requests.get(url)
-                
-            new = (r.content).decode("windows-1252").replace('href="','href="' + site_url + "url?q=" + current_domain)
-            new = (r.content).decode("windows-1252").replace('href="/','href="' + site_url + "url?q=" + current_domain)
+        r = requests.get(url)
+        content = r.content
+        modifiedContent = modifyUrls(content, siteUrl + "h/")
+        response = Response(response=modifiedContent, status=r.status_code)
+        response.headers["Content-Type"] = r.headers['Content-Type']
+        response.headers["Access-Control-Request-Method"] = "post"
+        response.headers["Access-Control-Request-Headers"] = "X-Requested-With"
 
-            print("Fecthing other: " + str(r.url))
+        return response
 
-            rr = Response(response=bytes(new, encoding="windows-1252"), status=r.status_code)
-            rr.headers["Content-Type"] = r.headers['Content-Type']
-            rr.headers["Access-Control-Request-Method"] = "post"
-            rr.headers["Access-Control-Request-Headers"] = "X-Requested-With"
-    
-    #IF SITE 404's        
-    except:
-        rr = ""
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return Response("Error processing the request", status=500)
 
-    return rr
+@app.errorhandler(404)
+def invalidRoute(e):
+    global currentDomain
+    if(currentDomain[len(currentDomain)-1] != "/"):
+        currentDomain = currentDomain + "/"
+    currentDomain = currentDomain.replace("https://", "").replace("http://", "")
 
-@app.errorhandler(404) 
-def invalid_route(e): 
-    if current_domain != "https://google.com ":
-        url = current_domain + (request.url).replace(site_url, "")
-    else:
-        url = current_domain + (request.url).replace(site_url, "/")
-        
-    print("SITE URL 404: ", url)
+    try:
+        if currentDomain:
+            print("\n\n[!+!+!] First op, curr domain: " + currentDomain + "\n[!+!+!] req url: " + request.url.replace(siteUrl + 'h/', ''))
+            url = f"{siteUrl}h/{trimUrl(currentDomain)}{request.url.replace(siteUrl, "")}/"
+        else:
+            print("\n\n[!+!+!] Second op, curr domain: " + currentDomain + "\n[!+!+!] req url: " + request.url.replace(siteUrl + 'h/', ''))
+            url = request.url.replace(siteUrl + "h/", "")
 
-    r = requests.get(url)
+        print(f"[404] New URL is: {url}\n\n")
+        r = requests.get(url)
+        content = r.content
+        modifiedContent = modifyUrls(content, siteUrl + "h/")
+        response = Response(response=modifiedContent, status=r.status_code)
+        response.headers["Content-Type"] = r.headers['Content-Type']
+        response.headers["Access-Control-Request-Method"] = "post"
+        response.headers["Access-Control-Request-Headers"] = "X-Requested-With"
 
-    print("Fecthing 404: " + str(r.url))
-    
-    new = (r.content).decode("windows-1252").replace('href="','href="' + site_url + "url?q=" + current_domain)
-    new = (r.content).decode("windows-1252").replace('href="/','href="' + site_url + "url?q=" + current_domain)
+        return response
 
-    rr = Response(response=new, status=r.status_code)
-    r.headers["X-Content-Type-Options"] = "nosniff"
-    rr.headers["Content-Type"] = r.headers['Content-Type']
-    rr.headers["Access-Control-Request-Method"] = "post"
-    rr.headers["Access-Control-Request-Headers"] = "X-Requested-With"
-
-    return rr
-
+    except Exception as e:
+        print(f"Error in handling 404: {str(e)}")
+        return Response("Error in handling 404", status=500)
 
 if __name__ == '__main__':
     app.run()
