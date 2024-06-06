@@ -17,10 +17,10 @@ useProx = False
 useCorbsProx = False
 
 #Proxies example (commented out)
-proxies = {
-    "http": os.environ['QUOTAGUARDSTATIC_URL'],
-    "https": os.environ['QUOTAGUARDSTATIC_URL']
-}
+# proxies = {
+#     "http": os.environ['QUOTAGUARDSTATIC_URL'],
+#     "https": os.environ['QUOTAGUARDSTATIC_URL']
+# }
 
 # Function to modify URLs in HTML content
 def modifyUrls(content, base_url):
@@ -141,7 +141,7 @@ def invalidRoute(e):
     try:
         if currentDomain:
             print("\n\n[!+!+!] First op, curr domain: " + currentDomain + "\n[!+!+!] req url: " + request.url.replace(siteUrl + 'h/', ''))
-            url = f"{siteUrl}h/{trimUrl(currentDomain)}{request.url.replace(siteUrl, "")}/"
+            url = f'{siteUrl}h/{trimUrl(currentDomain)}{request.url.replace(siteUrl, "")}/'
         else:
             print("\n\n[!+!+!] Second op, curr domain: " + currentDomain + "\n[!+!+!] req url: " + request.url.replace(siteUrl + 'h/', ''))
             url = request.url.replace(siteUrl + "h/", "")
